@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Creaty Lab - Premium design studio offering affordable poster design, video editing, and website development. Where designs speak.">
+<title>Creaty Lab — Where Designs Speak</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --max-w:1200px;
+    --primary: #00E5A8;
+    --secondary: #FF3B81;
+    --accent3: #FFD36B;
+    --bg-dark: #07060a;
+    --card: rgba(255,255,255,0.96);
+    --glass: rgba(255,255,255,0.06);
+    --muted: rgba(255,255,255,0.78);
+    --cta-shadow: 0 18px 48px rgba(255,59,129,0.14);
+    --transition: 240ms cubic-bezier(.2,.9,.2,1);
+    --INTENSITY: 0.9;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  html { scroll-behavior: smooth; } /* Added for smooth nav clicks */
+  body{
+    margin:0; font-family:'Poppins',system-ui;
+    background:var(--bg-dark); color:#fff;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  img{max-width:100%;display:block}
+  button{font-family:inherit}
+  .bg-wrap{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .svg-blobs{ position:absolute; inset:-15% -15% -15% -15%; filter: blur(44px) saturate(120%); mix-blend-mode:screen; z-index:0; }
+  .vignette{ position:absolute; inset:0; z-index:1; pointer-events:none;
+    background: radial-gradient(60% 45% at 50% 30%, rgba(255,255,255,0.02), rgba(0,0,0,0.55));
+    mix-blend-mode:multiply;
+  }
+  #particles{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+  .wrap{ position:relative; z-index:3; max-width:var(--max-w); margin:28px auto; padding:18px; }
+  header{ display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 18px; border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    backdrop-filter: blur(8px); box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  }
+  .brand{ display:flex; gap:14px; align-items:center; }
+  /* Logo styles */
+  .logo-link{ text-decoration: none; display: flex; align-items: center; }
+  .logo-img{ height: 50px; width: auto; transition: transform .3s ease, opacity .3s ease; }
+  .logo-img:hover{ transform: scale(1.05); opacity: 0.9; }
+  
+  nav{ display:flex; gap:18px; align-items:center }
+  nav a{ color:rgba(255,255,255,0.92); text-decoration:none; font-weight:700; position:relative; padding:6px 2px; transition: color var(--transition) }
+  nav a::after{ content:''; position:absolute; left:0; right:0; bottom:-6px; height:3px; width:0;
+    background: linear-gradient(90deg,var(--primary),var(--secondary)); border-radius:3px;
+    transition: width .28s cubic-bezier(.2,.9,.2,1) }
+  nav a:hover::after{ width:100% }
+  .controls{ display:flex; gap:10px; align-items:center }
+  .theme-toggle{ background:transparent; border:1px solid rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.92); padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:700 }
+  .theme-toggle.small{ padding:6px 8px; font-size:0.9rem }
+  .hero{
+    margin-top:22px; display:grid; grid-template-columns: 1fr 460px; gap:26px;
+    padding:44px; border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6); position:relative; overflow:visible;
+  }
+  .hero-left h2{
+    font-size:3rem; line-height:1.02; margin:0 0 12px 0; font-weight:800;
+    background: linear-gradient(90deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    letter-spacing:-0.5px;
+  }
+  .hero-left p{ color: rgba(255,255,255,0.92); font-size:1.05rem; margin:0 0 18px 0; max-width:62ch }
+  .actions{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
+  .btn{
+    border:0; cursor:pointer; border-radius:12px; padding:12px 18px; font-weight:800; color:#0b0b0b;
+    background: linear-gradient(90deg,var(--secondary),var(--accent3)); box-shadow: var(--cta-shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .btn:hover{ transform:translateY(-7px); box-shadow: 0 30px 80px rgba(255,59,129,0.22) }
+  .ghost{ background:transparent; color:rgba(255,255,255,0.95); border-radius:10px;
+    border:1px solid rgba(255,255,255,0.08); padding:10px 14px; font-weight:700;
+    text-decoration:none; display:inline-block }
+  .visual{ position:relative; display:flex; align-items:center; justify-content:center; }
+  .visual .mock{
+    width:420px; height:280px; border-radius:18px; padding:14px; display:flex; flex-direction:column; gap:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.04); box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+    transform-style: preserve-3d; will-change: transform;
+    transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s;
+  }
+  .mock .thumb{ height:120px; border-radius:12px;
+    background: linear-gradient(90deg,var(--primary),var(--secondary));
+    display:flex; align-items:center; justify-content:center; font-weight:800; color:white; font-size:1.1rem }
+  .mock .meta{ color:rgba(255,255,255,0.9); display:flex; justify-content:space-between; font-weight:700; margin-top:auto }
+  .float{ position:absolute; border-radius:50%; filter:blur(18px); mix-blend-mode:screen; opacity:0.7 }
+  section{ margin-top:36px }
+  .section-head{ display:flex; align-items:center; gap:12px; margin-bottom:14px }
+  .section-title{ font-size:1.3rem; font-weight:800; color:white;
+    background: linear-gradient(90deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:18px }
+  .card{
+    background:var(--card); border-radius:12px; padding:16px; box-shadow: 0 18px 50px rgba(4,6,20,0.6);
+    border:1px solid rgba(0,0,0,0.04);
+    transform-style:preserve-3d; will-change: transform;
+    transition: transform .26s cubic-bezier(.2,.9,.2,1), box-shadow .26s;
+  }
+  .card h4{ margin:0 0 8px 0; font-weight:800; color:#222 }
+  .card p{ margin:0; color:#333; font-size:0.95rem }
+  .card:hover{ transform:translateY(-10px); box-shadow: 0 40px 100px rgba(4,6,20,0.7) }
+  
+  /* NEW Testimonial Card Styles */
+  .testimonial-card p { margin:0; color:#333; font-size:0.95rem; }
+  .testimonial-card .review-text {
+    font-style: italic;
+    margin-bottom: 12px;
+    color: #222;
+    font-size: 1rem; /* Slightly larger text */
+  }
+  .testimonial-card .author {
+    font-weight: 800;
+    color: var(--secondary); /* Use brand color */
+    font-style: normal;
+    text-align: right;
+  }
+  
+  /* NEW About Section Styles */
+  .about-section {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    text-align: center;
+  }
+  .about-section h3 {
+     background: linear-gradient(90deg,var(--primary),var(--secondary));
+     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+     font-size: 1.5rem;
+     margin-top: 0;
+  }
+  .about-section p {
+    color: rgba(255,255,255,0.92);
+    font-size: 1.05rem;
+    max-width: 60ch;
+    margin: 0 auto 1.5rem auto;
+  }
+  
+  .pricing-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin-top:18px }
+  .pricing-card{
+    background:var(--card); border-radius:12px; padding:20px; box-shadow: 0 18px 50px rgba(4,6,20,0.6);
+    border:2px solid rgba(0,0,0,0.04); position:relative; overflow:hidden;
+    transition: transform .26s cubic-bezier(.2,.9,.2,1), box-shadow .26s, border-color .26s;
+  }
+  .pricing-card:hover{ transform:translateY(-10px); box-shadow: 0 40px 100px rgba(4,6,20,0.7); border-color:var(--primary) }
+  .pricing-card.featured{ border-color:var(--secondary); }
+  .pricing-card.featured::before{
+    content:'POPULAR'; position:absolute; top:12px; right:-30px; background:var(--secondary);
+    color:#fff; padding:4px 40px; font-size:0.7rem; font-weight:800; transform:rotate(45deg);
+  }
+  .plan-name{ font-size:1.4rem; font-weight:800; color:#222; margin:0 0 8px 0 }
+  .plan-price{ font-size:1.8rem; font-weight:800; color:var(--secondary); margin:0 0 12px 0 }
+  .plan-features{ list-style:none; padding:0; margin:12px 0; }
+  .plan-features li{ padding:8px 0; color:#444; font-size:0.9rem; border-bottom:1px solid rgba(0,0,0,0.05); }
+  .plan-features li:last-child{ border-bottom:none }
+  .plan-cta{ width:100%; margin-top:16px }
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px }
+  .filter-btn{ padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,0.06);
+    background:transparent; color:rgba(255,255,255,0.9); cursor:pointer; font-weight:700 }
+  .filter-btn.active{ background: linear-gradient(90deg,var(--primary),var(--secondary));
+    color:#050505; box-shadow: 0 14px 40px rgba(0,229,168,0.12) }
+  .sticky-cta{
+    position:fixed; right:22px; bottom:22px; z-index:9998; display:flex; gap:10px; align-items:center;
+  }
+  .sticky-btn{
+    background: linear-gradient(90deg,var(--secondary),var(--accent3));
+    color:#050505; padding:14px 18px; border-radius:14px; border:0; font-weight:900; cursor:pointer;
+    box-shadow: 0 18px 50px rgba(255,59,129,0.12); transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .sticky-btn:hover{ transform: translateY(-6px); box-shadow: 0 30px 90px rgba(255,59,129,0.2) }
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none;
+    align-items:center; justify-content:center; z-index:9999; padding:20px }
+  .modal{ width:100%; max-width:560px; border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+    color:#070707; padding:20px; box-shadow: 0 40px 120px rgba(4,6,20,0.6) }
+  .modal h3{ margin:0 0 8px 0 }
+  .modal .row{ display:flex; gap:8px; margin-bottom:10px }
+  .modal input, .modal textarea{ width:100%; padding:10px; border-radius:8px;
+    border:1px solid rgba(0,0,0,0.08); font-size:0.95rem }
+  .modal .actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:8px; flex-wrap:wrap }
+  .close-btn{ background:transparent; border:1px solid rgba(0,0,0,0.06);
+    padding:8px 10px; border-radius:8px; cursor:pointer }
+  .cursor{ position:fixed; z-index:9999; top:0; left:0; width:18px; height:18px; border-radius:50%;
+    pointer-events:none; transform:translate(-50%,-50%);
+    border:2px solid rgba(255,255,255,0.9);
+    transition: transform 120ms linear, background 180ms linear, width 160ms linear, height 160ms linear;
+    mix-blend-mode:screen;
+  }
+  .cursor.big{ width:48px; height:48px;
+    background: linear-gradient(90deg,var(--primary),var(--secondary)); border: 0; opacity:0.95;
+    box-shadow: 0 12px 40px rgba(0,229,168,0.12) }
+  .reveal{ opacity:0; transform: translateY(18px) scale(0.995);
+    transition: opacity .7s cubic-bezier(.2,.9,.2,1), transform .7s cubic-bezier(.2,.9,.2,1);
+    will-change: transform, opacity }
+  .reveal.revealed{ opacity:1; transform: none }
+  footer{ margin-top:40px; text-align:center; color:rgba(255,255,255,0.8); padding:16px; border-radius:10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)) }
+  @media (max-width:980px){
+    .hero{ grid-template-columns: 1fr; padding:28px }
+    .visual{ order:-1; margin-bottom:8px }
+    .mock{ width:100% }
+    .sticky-cta{ right:12px; bottom:12px }
+    .pricing-grid{ grid-template-columns: 1fr }
+  }
+  @media (max-width:520px){
+    header{ padding:8px; flex-direction:column }
+    .wrap{ padding:8px }
+    .hero-left h2{ font-size:1.6rem }
+    .cursor{ display:none }
+    nav{ flex-wrap:wrap; justify-content:center }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ transition:none !important; transform:none !important; opacity:1 !important }
+    .svg-blobs{ animation:none !important; filter: blur(34px) }
+    #particles{ display:none }
+    .card, .mock, .btn{ transition:none !important }
+  }
+  :focus{ outline:2px solid rgba(255,255,255,0.12); outline-offset:3px }
+</style>
+</head>
+<body>
+
+<div class="bg-wrap" aria-hidden="true">
+  <svg class="svg-blobs" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="var(--primary)"/><stop offset="1" stop-color="var(--secondary)"/></linearGradient>
+      <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="var(--secondary)"/><stop offset="1" stop-color="var(--accent3)"/></linearGradient>
+      <linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="var(--accent3)"/><stop offset="1" stop-color="#FFDFA8"/></linearGradient>
+    </defs>
+    <g>
+      <path id="blobA" fill="url(#g1)" d="M360 80c86-12 156 18 232 52 76 34 148 64 172 136 24 72-4 176-68 228-64 52-166 62-250 38-84-24-130-88-170-166-40-78-66-172 84-216z" opacity="0.95"></path>
+      <path id="blobB" fill="url(#g2)" d="M60 280c70-40 152-40 228-18 76 22 152 44 198 110 46 66 24 158-36 206s-138 46-218 22c-80-24-138-88-172-160C60 386 24 326 60 280z" opacity="0.9"></path>
+      <path id="blobC" fill="url(#g3)" d="M840 140c84 18 138 70 170 120 32 50 46 110 22 168s-78 98-148 116c-70 18-156 18-210-18-54-36-78-106-102-166-24-60-36-124 108-190z" opacity="0.85"></path>
+    </g>
+  </svg>
+  <canvas id="particles"></canvas>
+  <div class="vignette"></div>
+</div>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header class="reveal" data-reveal>
+    <div class="brand">
+      <a href="#home" class="logo-link">
+        <img src="Screenshot-2025-10-18-152203.png" alt="Creaty Lab Logo" class="logo-img" />
+      </a>
+    </div>
+    <div class="controls">
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#testimonials">Reviews</a> <a href="#about">About</a> <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle small" id="themeToggle" aria-pressed="false" title="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero reveal" data-reveal>
+      <div class="hero-left">
+        <h2 class="js-split">We make visuals that sell — bold, fast, and unforgettable.</h2>
+        <p>Scroll-stopping posters, high-converting websites, and social edits built for growth. Files delivered ready to use.</p>
+        <div class="actions">
+          <button class="btn" id="openQuote">Get a Quote</button>
+          <a class="ghost" href="#portfolio">See Portfolio</a>
+          <a class="ghost" href="https://instagram.com/designs.creaty" target="_blank" rel="noopener">📱 @designs.creaty</a>
+        </div>
+      </div>
+      <div class="visual" aria-hidden="true">
+        <div class="float" style="width:220px;height:220px;left:-40px;top:-40px;background:linear-gradient(90deg,var(--primary),var(--secondary));"></div>
+        <div class="mock" id="mockCard" data-tilt>
+          <div class="thumb">Poster • Web • Reel</div>
+          <div style="font-weight:800;color:white">Premium Creative Pack</div>
+          <div style="color:rgba(255,255,255,0.9)">Layered PSD / Figma • Fast delivery • Unlimited revisions</div>
+          <div class="meta"><div>₹199–₹25K+</div><div>Fast delivery</div></div>
+        </div>
+        <div class="float" style="width:160px;height:160px;right:-30px;bottom:-30px;background:linear-gradient(90deg,var(--secondary),var(--accent3));"></div>
+      </div>
+    </section>
+
+    <section id="services" class="reveal" data-reveal>
+      <div class="section-head">
+        <h3 class="section-title">Our Services</h3>
+      </div>
+      <div class="grid">
+        <article class="card" data-tilt>
+          <h4>🎨 Poster Design</h4>
+          <p>Print & social-first posters built for engagement and shares. Perfect for events, promotions, and brand visibility.</p>
+        </article>
+        <article class="card" data-tilt>
+          <h4>💻 Website Development</h4>
+          <p>Complete end-to-end websites with responsive design, SEO optimization, and modern aesthetics.</p>
+        </article>
+        <article class="card" data-tilt>
+          <h4>🎬 Video & Reels</h4>
+          <p>Short edits optimized for watch-time and shares. Perfect for Instagram, YouTube, and social campaigns.</p>
+        </article>
+        <article class="card" data-tilt>
+          <h4>📦 Combo Packages</h4>
+          <p>Get posters + website + video in one cohesive branding package at discounted rates.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="pricing" class="reveal" data-reveal>
+      <div class="section-head">
+        <h3 class="section-title">Affordable Pricing Plans</h3>
+      </div>
+
+      <h4 style="color:rgba(255,255,255,0.9);margin:24px 0 12px 0;font-size:1.2rem">🎨 Poster Design</h4>
+      <div class="pricing-grid">
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">₹199</div>
+          <ul class="plan-features">
+            <li>✅ 2 simple posters</li>
+            <li>✅ 3 revisions</li>
+            <li>✅ Digital delivery</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card featured" data-tilt>
+          <div class="plan-name">Standard</div>
+          <div class="plan-price">₹299 - ₹499</div>
+          <ul class="plan-features">
+            <li>✅ 2 custom posters</li>
+            <li>✅ 3 revisions</li>
+            <li>✅ Source files</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Premium</div>
+          <div class="plan-price">₹500+</div>
+          <ul class="plan-features">
+            <li>✅ Multi-poster set</li>
+            <li>✅ Unlimited revisions</li>
+            <li>✅ All source files</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Festival</div>
+          <div class="plan-price">₹1,000+</div>
+          <ul class="plan-features">
+            <li>✅ 8+ custom posters</li>
+            <li>✅ Unlimited revisions</li>
+            <li>✅ Priority delivery</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+      </div>
+
+      <h4 style="color:rgba(255,255,255,0.9);margin:36px 0 12px 0;font-size:1.2rem">🎬 Reels & Video Editing</h4>
+      <div class="pricing-grid">
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">₹199 - ₹499</div>
+          <ul class="plan-features">
+            <li>✅ Short reel edits</li>
+            <li>✅ 1 revision</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card featured" data-tilt>
+          <div class="plan-name">Standard</div>
+          <div class="plan-price">₹500 - ₹999</div>
+          <ul class="plan-features">
+            <li>✅ Longer reels</li>
+            <li>✅ Basic effects</li>
+            <li>✅ 2 revisions</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Premium</div>
+          <div class="plan-price">₹1,000+</div>
+          <ul class="plan-features">
+            <li>✅ Advanced edits</li>
+            <li>✅ Animations</li>
+            <li>✅ Unlimited revisions</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+      </div>
+
+      <h4 style="color:rgba(255,255,255,0.9);margin:36px 0 12px 0;font-size:1.2rem">💻 Website Development</h4>
+      <div class="pricing-grid">
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">₹2,000 - ₹5,000</div>
+          <ul class="plan-features">
+            <li>✅ Up to 3 pages</li>
+            <li>✅ Responsive design</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card featured" data-tilt>
+          <div class="plan-name">Standard</div>
+          <div class="plan-price">₹5,001 - ₹10,000</div>
+          <ul class="plan-features">
+            <li>✅ Up to 7 pages</li>
+            <li>✅ SEO optimized</li>
+            <li>✅ 2 revisions</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Premium</div>
+          <div class="plan-price">₹10,000+</div>
+          <ul class="plan-features">
+            <li>✅ Full branding</li>
+            <li>✅ E-commerce features</li>
+            <li>✅ Unlimited revisions</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+      </div>
+
+      <h4 style="color:rgba(255,255,255,0.9);margin:36px 0 12px 0;font-size:1.2rem">📦 Combo Packages</h4>
+      <div class="pricing-grid">
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Starter Combo</div>
+          <div class="plan-price">₹3,000 - ₹5,000</div>
+          <ul class="plan-features">
+            <li>✅ 2 Posters + Short Reel + Basic Website</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card featured" data-tilt>
+          <div class="plan-name">Growth Combo</div>
+          <div class="plan-price">₹6,000 - ₹10,000</div>
+          <ul class="plan-features">
+            <li>✅ 4 Posters + Standard Reel + Standard Website</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+        <div class="pricing-card" data-tilt>
+          <div class="plan-name">Premium Combo</div>
+          <div class="plan-price">₹11,000+</div>
+          <ul class="plan-features">
+            <li>✅ 8+ Posters + Premium Reel + Premium Website</li>
+            <li>✅ Priority support</li>
+          </ul>
+          <button class="btn plan-cta" onclick="document.getElementById('openQuote').click()">Get Started</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio" class="reveal" data-reveal>
+      <div class="section-head">
+        <h3 class="section-title">Portfolio</h3>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="poster">Posters</button>
+        <button class="filter-btn" data-filter="ui">Websites</button>
+        <button class="filter-btn" data-filter="video">Videos</button>
+      </div>
+      <div class="grid" id="portfolioGrid">
+        <article class="card" data-tags="poster" data-tilt>
+          <h4>GenZ Party Poster</h4>
+          <p>Bold typography, neon accents—designed to share.</p>
+        </article>
+        <article class="card" data-tags="ui" data-tilt>
+          <h4>Local Café Website</h4>
+          <p>Menu-first hero, modern layout.</p>
+        </article>
+        <article class="card" data-tags="video" data-tilt>
+          <h4>Promo Reel</h4>
+          <p>Fast cuts optimized for Instagram Reels.</p>
+        </article>
+        <article class="card" data-tags="poster" data-tilt>
+          <h4>Festival Poster</h4>
+          <p>Large type, high contrast, immediate appeal.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="testimonials" class="reveal" data-reveal>
+      <div class="section-head">
+        <h3 class="section-title">What Our Clients Say</h3>
+      </div>
+      <div class="grid">
+        <article class="card testimonial-card" data-tilt>
+          <p class="review-text">"Working with Creaty Lab was a fantastic experience. The final designs were incredibly professional and exceeded all our expectations. Highly recommended."</p>
+          <p class="author">— J. Shah</p>
+        </article>
+        <article class="card testimonial-card" data-tilt>
+          <p class="review-text">"Incredibly fast turnaround and the results were amazing. Our new poster made an immediate impact. We will definitely be working with them again."</p>
+          <p class="author">— K. Patel</p>
+        </article>
+        <article class="card testimonial-card" data-tilt>
+          <p class="review-text">"They were amazing at listening to our ideas and turning them into a reality. The communication was clear, and the creative vision was exactly what we needed."</p>
+          <p class="author">— P. Andrew (USA)</p>
+        </article>
+      </div>
+    </section>
+    <section id="about" class="reveal" data-reveal>
+      <div class="about-section">
+        <h3>About the Founder</h3>
+        <p>Hi, I'm KEVAL DOSHI, the founder of Creaty Lab. My passion is turning ideas into visuals that sell. I started this studio to help new businesses make a bold impact. Let's build something unforgettable together.</p>
+        <a class="ghost" href="https://instagram.com/designs.creaty" target="_blank" rel="noopener">Follow my work</a>
+      </div>
+    </section>
+    <section id="contact" class="reveal" data-reveal>
+      <div class="section-head"><h3 class="section-title">Let's Talk</h3></div>
+      <p style="color:rgba(255,255,255,0.9);margin-bottom:16px">Ready to bring your vision to life?</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="btn" href="https://instagram.com/designs.creaty" target="_blank" rel="noopener">📱 Instagram</a>
+        <a class="ghost" href="https://wa.me/917624069369" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <a class="ghost" href="mailto:creatylab.designs@gmail.com">📧 Email</a>
+      </div>
+    </section>
+
+    <footer class="reveal" data-reveal>
+      <p>&copy; 2025 Creaty Lab — Where Designs Speak</p>
+      <p style="font-size:0.85rem;margin-top:8px">Follow: <a href="https://instagram.com/designs.creaty" target="_blank" rel="noopener" style="color:var(--primary)">@designs.creaty</a></p>
+    </footer>
+  </main>
+</div>
+
+<div class="sticky-cta">
+  <button class="sticky-btn" id="stickyOpen">Get Quote</button>
+</div>
+
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <h3>Quick Quote</h3>
+    <p style="margin-top:6px;margin-bottom:12px;color:#333">Tell us the basics and we'll reply fast.</p>
+    <div class="row">
+      <input id="name" type="text" placeholder="Your name" />
+    </div>
+    <div class="row">
+      <input id="email" type="email" placeholder="Email or WhatsApp (+91...)" />
+    </div>
+    <div class="row">
+      <textarea id="details" rows="5" placeholder="Project details (type, sizes, deadline, budget)"></textarea>
+    </div>
+    <div class="actions">
+      <button class="close-btn" id="closeModal">Cancel</button>
+      <button class="btn" id="whatsappSend">WhatsApp</button>
+      <button class="btn" id="gmailSend">Email</button>
+      <button class="ghost" id="igSend">Instagram DM</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const INT = 0.9;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const throttle = (fn, wait) => {
+    let last = 0, t;
+    return (...args) => {
+      const now = Date.now();
+      if (now - last >= wait) { last = now; fn(...args); }
+      else { clearTimeout(t); t = setTimeout(()=>{ last = Date.now(); fn(...args); }, wait - (now - last)); }
+    };
+  };
+  const svg = document.querySelector('.svg-blobs');
+  const blobs = [document.getElementById('blobA'), document.getElementById('blobB'), document.getElementById('blobC')];
+  const canvas = document.getElementById('particles');
+  const ctx = canvas && canvas.getContext ? canvas.getContext('2d') : null;
+  function resize() {
+    if (canvas) { canvas.width = innerWidth; canvas.height = innerHeight; }
+    if (svg) svg.setAttribute('viewBox', `0 0 ${Math.max(1200, innerWidth)} ${Math.max(800, innerHeight)}`);
+  }
+  window.addEventListener('resize', throttle(resize, 120));
+  resize();
+  const start = performance.now();
+  function animateBlobs(now) {
+    if (reduced) return;
+    const t = (now - start)/1000;
+    blobs.forEach((b,i)=>{
+      if(!b) return;
+      const x = Math.sin(t * (0.6 + i*0.15)) * (40 * INT) * (1 - i*0.12);
+      const y = Math.cos(t * (0.5 + i*0.12)) * (28 * INT) * (1 - i*0.1);
+      const rot = Math.sin(t * (0.2 + i*0.1)) * (6 * INT);
+      b.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+    });
+    requestAnimationFrame(animateBlobs);
+  }
+  if (!reduced) requestAnimationFrame(animateBlobs);
+  let particles = [];
+  function initParticles(){
+    if(!ctx || reduced) return;
+    particles=[];
+    const count = Math.round(Math.min(220, (innerWidth / 8)) * (0.6 + INT*0.9));
+    for(let i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: 0.6 + Math.random()*1.6,
+        vx: (Math.random()-0.5) * 0.25 * (1+INT),
+        vy: (Math.random()-0.5) * 0.25 * (1+INT),
+        a: 0.02 + Math.random()*0.08
+      });
+    }
+  }
+  initParticles();
+  function drawParticles(){
+    if(!ctx || reduced) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(const p of particles){
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < -10) p.x = canvas.width + 10;
+      if(p.x > canvas.width + 10) p.x = -10;
+      if(p.y < -10) p.y = canvas.height + 10;
+      if(p.y > canvas.height + 10) p.y = -10;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+  let last=0;
+  function particleLoop(now){
+    if(reduced) return;
+    if(now - last > (12 - INT*6)) { drawParticles(); last = now; }
+    requestAnimationFrame(particleLoop);
+  }
+  requestAnimationFrame(particleLoop);
+  window.addEventListener('resize', throttle(()=>{ initParticles(); }, 200));
+  const hero = document.querySelector('.hero');
+  if(hero && !reduced){
+    const handle = throttle((e)=>{
+      const rect = hero.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height/2;
+      const dx = (e.clientX - cx)/(rect.width/2);
+      const dy = (e.clientY - cy)/(rect.height/2);
+      const intensity = 6 * INT;
+      const mock = document.getElementById('mockCard');
+      if(mock){ const tx = dx * intensity; const ty = dy * intensity * -1; mock.style.transform = `translateZ(0) rotateX(${ty}deg) rotateY(${tx}deg)`; }
+    }, 16);
+    hero.addEventListener('mousemove', handle);
+    hero.addEventListener('mouseleave', ()=>{ const mock = document.getElementById('mockCard'); if(mock) mock.style.transform=''; });
+  }
+  function initTilt(){
+    const tiltEls = document.querySelectorAll('[data-tilt]');
+    tiltEls.forEach(el=>{
+      let rect;
+      const onMove = (evt)=>{
+        const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+        const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        rect = rect || el.getBoundingClientRect();
+        const px = (clientX - rect.left) / rect.width - 0.5;
+        const py = (clientY - rect.top) / rect.height - 0.5;
+        const rx = (-py) * 8 * INT;
+        const ry = (px) * 8 * INT;
+        el.style.transform = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(6px)`;
+      };
+      const onEnter = ()=>{ rect = el.getBoundingClientRect(); el.style.transition='transform .12s ease'; };
+      const onLeave = ()=>{ el.style.transition='transform .28s cubic-bezier(.2,.9,.2,1)'; el.style.transform=''; rect=null; };
+      el.addEventListener('mousemove', onMove);
+      el.addEventListener('touchmove', onMove, {passive:true});
+      el.addEventListener('mouseenter', onEnter);
+      el.addEventListener('mouseleave', onLeave);
+      el.addEventListener('touchend', onLeave);
+    });
+  }
+  initTilt();
+  const splitHeadings = document.querySelectorAll('.js-split');
+  splitHeadings.forEach(h=>{
+    const text = h.textContent.trim();
+    h.innerHTML = '';
+    const words = text.split(' ');
+    words.forEach((word, wi)=>{
+      const wrap = document.createElement('span'); wrap.style.display='inline-block'; wrap.style.overflow='hidden';
+      word.split('').forEach((ch,i)=>{
+        const s = document.createElement('span'); s.textContent = ch; s.style.display='inline-block';
+        s.style.transform='translateY(100%)'; s.style.opacity='0';
+        s.style.transition=`transform .5s cubic-bezier(.2,.9,.2,1) ${ (wi*6 + i) * 0.03 }s, opacity .5s ${ (wi*6 + i) * 0.03 }s`;
+        wrap.appendChild(s);
+      });
+      h.appendChild(wrap); h.appendChild(document.createTextNode(' '));
+    });
+    setTimeout(()=>{ h.querySelectorAll('span span').forEach(s=>{ s.style.transform='translateY(0%)'; s.style.opacity='1'; }); }, 400);
+  });
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const observer = new IntersectionObserver((entries, obs)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){ en.target.classList.add('revealed'); obs.unobserve(en.target); }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+  const cursor = document.getElementById('cursor');
+  if(cursor && !(/Mobi|Android/i.test(navigator.userAgent))){
+    let mx = innerWidth/2, my = innerHeight/2;
+    const move = (e) => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; };
+    window.addEventListener('mousemove', throttle(move, 8));
+    const interactive = document.querySelectorAll('a, button, .card, .btn, .filter-btn, nav a, .pricing-card');
+    interactive.forEach(el=>{ el.addEventListener('mouseenter', ()=> cursor.classList.add('big')); el.addEventListener('mouseleave', ()=> cursor.classList.remove('big')); });
+  } else if (cursor){ cursor.style.display='none'; }
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const grid = document.getElementById('portfolioGrid');
+  filterBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      filterBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      const items = grid.querySelectorAll('.card');
+      items.forEach(it=>{
+        const tags = (it.dataset.tags || '').split(/\s+/);
+        const match = (f === 'all') ? true : tags.includes(f);
+        if(match){ it.style.display = ''; it.classList.add('revealed'); }
+        else{ it.style.display = 'none'; it.classList.remove('revealed'); }
+      });
+    });
+  });
+  const modal = document.getElementById('modal');
+  const openButtons = [document.getElementById('openQuote'), document.getElementById('stickyOpen')];
+  const closeModal = document.getElementById('closeModal');
+  function showModal(){
+    modal.style.display = 'flex'; modal.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden';
+    setTimeout(()=> document.getElementById('name').focus(), 80);
+  }
+  function hideModal(){
+    modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); document.body.style.overflow = '';
+  }
+  openButtons.forEach(b=> b && b.addEventListener('click', showModal));
+  closeModal && closeModal.addEventListener('click', hideModal);
+  modal.addEventListener('click', (e)=> { if(e.target === modal) hideModal(); });
+  function getPrefillMessagePlain() {
+    const name = (document.getElementById('name')||{}).value.trim() || '[Name]';
+    const contact = (document.getElementById('email')||{}).value.trim() || '[Contact]';
+    const details = (document.getElementById('details')||{}).value.trim() || '[Project details]';
+    return `Hi Creaty Lab 👋\n\nMy name: ${name}\nContact: ${contact}\n\nProject details:\n${details}\n\nPlease reply with availability & estimated price. Thanks!`;
+  }
+  function getPrefillMessageEncoded() {
+    return encodeURIComponent(getPrefillMessagePlain());
+  }
+  function copyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e){}
+      document.body.removeChild(ta);
+      return Promise.resolve();
+    }
+  }
+  const whatsappBtn = document.getElementById('whatsappSend');
+  const gmailBtn = document.getElementById('gmailSend');
+  const igBtn = document.getElementById('igSend');
+  if(whatsappBtn){
+    whatsappBtn.addEventListener('click', () => {
+      const encoded = getPrefillMessageEncoded();
+      const number = '917624069369';
+      const href = `https://wa.me/${number}?text=${encoded}`;
+      window.open(href, '_blank');
+      hideModal();
+    });
+  }
+  if(gmailBtn){
+    gmailBtn.addEventListener('click', () => {
+      const name = (document.getElementById('name')||{}).value.trim() || '';
+      const subject = encodeURIComponent(`Quote request from ${name || 'Website'}`);
+      const body = getPrefillMessageEncoded();
+      const mailto = `mailto:creatylab.designs@gmail.com?subject=${subject}&body=${body}`;
+      window.location.href = mailto;
+      hideModal();
+    });
+  }
+  if(igBtn){
+    igBtn.addEventListener('click', async () => {
+      const plain = getPrefillMessagePlain();
+      try {
+        await copyToClipboard(plain);
+        window.open('https://instagram.com/designs.creaty', '_blank');
+        alert('Message copied! Paste in Instagram DM.');
+        hideModal();
+      } catch(err){
+        alert('Copy failed. Please copy manually:\n\n' + plain);
+      }
+    });
+  }
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  const stored = localStorage.getItem('creaty-theme') || 'dark';
+  function applyTheme(t){
+    if(t === 'light'){
+      root.style.setProperty('--bg-dark', '#f7f7fb');
+      document.body.style.background = '#f7f7fb';
+      root.style.setProperty('--card', 'rgba(10,10,12,0.04)');
+      themeBtn.textContent = '☀️';
+    } else {
+      root.style.setProperty('--bg-dark', '#07060a');
+      document.body.style.background = '#07060a';
+      root.style.setProperty('--card', 'rgba(255,255,255,0.96)');
+      themeBtn.textContent = '🌙';
+    }
+    localStorage.setItem('creaty-theme', t);
+  }
+  applyTheme(stored);
+  themeBtn.addEventListener('click', ()=> applyTheme(localStorage.getItem('creaty-theme') === 'dark' ? 'light' : 'dark'));
+})();
+</script>
+</body>
+</html>
